@@ -1,0 +1,79 @@
+<!doctype html>
+ <head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="project.css">
+  <title>chh1025-ABCD</title>
+
+ </head>
+ <body>
+    <div class='container'>
+        <div class='item' id='mt'>충곽 대나무숲</div>
+        <div class='item' id='danger'>한번뱉은말은주워담을수없습니다.</div>
+        <div class="item" id='text'>
+            <span rows="10" cols="60" id="result" readonly></span>
+        </div>
+
+        <div class="item" id='smcon'>
+            <textarea type="text" id="message" placeholder="" style='resize:none'></textarea>
+            <button type="button" onclick="savedata()" id='btn'>저장</button>
+        </div>
+        
+
+        
+    </div>
+ </body>
+</html>
+
+
+<script src="https://www.gstatic.com/firebasejs/4.11.0/firebase.js"></script>
+<script>
+
+	var config = {
+        apiKey: "AIzaSyCA9d9SIqsnMjgdEPeyfOfcNfK7ZonVq74",
+        authDomain: "abcd-a861c.firebaseapp.com",
+        databaseURL: "https://abcd-a861c-default-rtdb.firebaseio.com",
+        projectId: "abcd-a861c",
+        storageBucket: "abcd-a861c.appspot.com",
+        messagingSenderId: "571093131197",
+        appId: "1:571093131197:web:9c699babfc89d4eff37cd4"
+      };
+	firebase.initializeApp(config);
+
+	var messageField = document.getElementById("message");
+	var result = document.getElementById("result");
+
+	var database = firebase.database();
+	
+	function guid() {
+		function s4() {
+		  return ((1 + Math.random()) * 0x10000 | 0).toString(16).substring(1);
+		}
+		return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
+	}
+
+	var messageRef = database.ref("message");
+	messageRef.on('child_added', (snapshot) => {
+	  var data = snapshot.val();
+		var message = data.text;
+		if(message != undefined){
+			result.innerHTML += message + "<br/><br/>------------------------------------------<br/><br/>";
+		}
+	});
+
+	function savedata() {
+		var uuid = guid();
+		var message = messageField.value;
+		if (message == "")
+		{
+			alert("메시지를 입력하세요");
+			return true;
+		} 
+		database.ref('message/' + uuid).set({
+			text: message
+		});
+		messageField.value = "";
+	}
+
+
+
+</script>
